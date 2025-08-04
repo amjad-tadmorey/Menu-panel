@@ -1,33 +1,31 @@
 import { useGet } from '../hooks/remote/useGet'
 import { useUpdate } from '../hooks/remote/useUpdate'
-import { useDelete } from '../hooks/remote/useDelete'
 
 import Button from '../ui/Button'
 import Spinner from '../ui/Spinner'
+import { formateDate } from '../helpers/utilHelpers'
 
 export default function OrdersManagement() {
     const { data: orders, isPending } = useGet("orders", {
-        joins: [
-            { table: "tables", select: "table_number" }
-        ]
-    })
+        includeRelations: [
+            { relation: 'items', foreignKey: 'id' },
+            { relation: 'table', foreignKey: 'table_id' }
+        ],
+        orderBy: {column: 'created_at', ascending: false }
+    });
 
-    const updateMutation = useUpdate('orders');
-    const deleteMutation = useDelete('orders');
+    const { mutate: updateStatus } = useUpdate('orders', 'orders');
 
     if (isPending) return <Spinner />
-    console.log(orders);
 
     const toggleStatus = (order) => {
         const newStatus = order.status === 'pending' ? 'completed' : 'pending';
-        updateMutation.mutate({ id: order.id, status: newStatus });
+        updateStatus({  
+            match: { id: order.id },
+            updates: { status: newStatus }
+        });
     };
 
-    const deleteOrder = (id) => {
-        if (window.confirm('Are you sure you want to delete this order?')) {
-            deleteMutation.mutate(id);
-        }
-    };
 
     return (
         <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
@@ -37,6 +35,7 @@ export default function OrdersManagement() {
                 <table className="min-w-full border border-gray-200 divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Ordered At</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Order ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Table ID</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">Status</th>
@@ -51,10 +50,11 @@ export default function OrdersManagement() {
                                 </td>
                             </tr>
                         ) : (
-                            orders.map(order => (
+                            orders.map((order) => (
                                 <tr key={order.id} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{formateDate(order.created_at)}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{order.id}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{order.table_id}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{order.table.table_number}</td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                                         <span
                                             className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
@@ -65,17 +65,12 @@ export default function OrdersManagement() {
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
                                         <Button
-                                            onClick={() => toggleStatus(order)}
-                                            disabled={updateMutation.isLoading}
+                                            onClick={() => {
+                                                console.log(order.id);
+                                                toggleStatus(order)
+                                            }}
                                         >
                                             Toggle Status
-                                        </Button>
-                                        <Button
-                                            variant='danger'
-                                            onClick={() => deleteOrder(order.id)}
-                                            disabled={deleteMutation.isLoading}
-                                        >
-                                            Delete
                                         </Button>
                                     </td>
 

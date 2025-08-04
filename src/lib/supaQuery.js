@@ -11,28 +11,53 @@ const applyFilters = (query, filters = []) => {
 
 // 🟢 SELECT
 export const supaQuery = async (table, options = {}) => {
-    let { filters = [], limit, offset, orderBy, single = false } = options
-    let query = supabase.from(table).select(`
-    *,
-    tables (
-      table_number
-    )
-  `)
+  let {
+    filters = [],
+    limit,
+    offset,
+    orderBy,
+    single = false,
+    includeRelations = [], // Can be strings or objects { relation: 'order_items', foreignKey: 'order_id' }
+  } = options;
+
+  // Build select string
+  let selectStr = '*';
+
+  if (includeRelations.length > 0) {
+    const relationsStr = includeRelations
+      .map((relation) => {
+        if (typeof relation === 'string') {
+          // default foreign key guess
+          const foreignKey = `${relation}_id`;
+          return `${relation}:${foreignKey} ( * )`;
+        } else if (typeof relation === 'object' && relation.relation && relation.foreignKey) {
+          return `${relation.relation}:${relation.foreignKey} ( * )`;
+        } else {
+          throw new Error('Invalid relation format in includeRelations');
+        }
+      })
+      .join(', ');
+
+    selectStr += `, ${relationsStr}`;
+  }
+
+  let query = supabase.from(table).select(selectStr);
+
+  query = applyFilters(query, filters);
+
+  if (orderBy) {
+    query = query.order(orderBy.column, { ascending: orderBy.ascending });
+  }
+  if (limit) query = query.limit(limit);
+  if (offset) query = query.offset(offset);
+  if (single) query = query.single();
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data;
+};
 
 
-    query = applyFilters(query, filters)
-
-    if (orderBy) {
-        query = query.order(orderBy.column, { ascending: orderBy.ascending })
-    }
-    if (limit) query = query.limit(limit)
-    if (offset) query = query.offset(offset)
-    if (single) query = query.single()
-
-    const { data, error } = await query
-    if (error) throw error
-    return data
-}
 
 // 🟢 INSERT
 export async function supaInsert(table, payload) {
