@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Ghost } from "lucide-react"; // Optional icon, replace if needed
 
 export default function NoData({ message = "No data available" }) {
