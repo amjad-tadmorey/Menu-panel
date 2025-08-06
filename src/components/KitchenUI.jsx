@@ -2,6 +2,7 @@ import { useOrders } from "../hooks/remote/useOrders";
 import { useUpdateOrder } from "../hooks/remote/useUpdateOrder";
 import { fetchOrdersWithFullDetails } from "../lib/ordersApi";
 import Button from "../ui/Button";
+import NoData from "../ui/NoData";
 import Spinner from "../ui/Spinner";
 
 export default function KitchenUI() {
@@ -12,11 +13,13 @@ export default function KitchenUI() {
     if (isPending) return <Spinner />
 
     return (
-        <div className="p-6 mx-auto flex-1">
+        <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
             <h1 className="text-3xl font-semibold mb-6 text-gray-800">Kitchen UI</h1>
 
             {orders.length === 0 && (
-                <div className="text-center text-gray-400">لا يوجد طلبات حالياً</div>
+                <div className="text-center text-gray-400">
+                    <NoData message="No Orders Yet"/>
+                </div>
             )}
 
             <div className="grid gap-6">
@@ -40,18 +43,19 @@ export default function KitchenUI() {
                                     <span className="font-medium">
                                         {item.menu?.name ?? '—'}
                                     </span>
-                                    <span className="text-sm text-gray-600">
-                                        الكمية: {item.quantity}
+                                    <span className="text-xl text-gray-600">
+                                        الكمية: <strong>{item.quantity}</strong>
                                     </span>
                                 </li>
                             ))}
                         </ul>
-                        <span>{order.notes}</span>
+                        {order.notes && <div className="w-full mt-1 p-3 rounded-lg border border-gray-300 my-4">{order.notes}</div>}
 
                         <Button
                             onClick={() => updateOrder({ orderId: order.id, updatedFields: { status: 'ready' } })}
                             disabled={isUpdating}
                             variant="success"
+                            className="mt-4"
                         >
                             إنهاء التحضير
                         </Button>

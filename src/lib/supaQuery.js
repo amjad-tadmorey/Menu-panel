@@ -1,5 +1,8 @@
+import { restaurantId, SUPABASE_URL } from "../constants/remote";
 import { supabase } from "./supabase"
 import { v4 as uuidv4 } from 'uuid';
+
+
 
 
 // const applyFilters = (query, filters = []) => {
@@ -49,7 +52,7 @@ export const supaQuery = async (table, options = {}) => {
   if (orderBy) {
     query = query.order(orderBy.column, { ascending: orderBy.ascending });
   }
-
+  query.eq('restaurant_id', restaurantId)
   if (limit) query = query.limit(limit);
   if (offset) query = query.offset(offset);
   if (single) query = query.single();
@@ -58,8 +61,6 @@ export const supaQuery = async (table, options = {}) => {
   if (error) throw error;
   return data;
 };
-
-
 
 
 // 🟢 INSERT
@@ -85,79 +86,21 @@ export async function supaUpdate(table, match, updates) {
 }
 
 
-export async function uploadShopData(shop) {
-  try {
-    // Extract logo image file
-    const logoFile = shop.logo;
-    const fileExt = logoFile.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const filePath = `${fileName}`;
+// lib/uploadImage.js
+export const createMenuItem = async (data) => {
+  const { error } = await supabase.from("menu").insert(data);
+  if (error) throw error;
+  return true;
+};
 
-    // Upload to Supabase Storage (bucket: logos)
-    const { error: uploadError } = await supabase.storage
-      .from('logos')
-      .upload(filePath, logoFile);
+export const uploadImage = async (file) => {
+  if (!file) throw new Error("No image file provided");
 
-    if (uploadError) {
-      console.error('Image upload error:', uploadError.message);
-      return { error: uploadError };
-    }
+  const ext = file.name.split(".").pop();
+  const fileName = `${uuidv4()}.${ext}-${restaurantId}`;
 
-    // Get public URL
-    const { data: publicUrlData } = supabase.storage
-      .from('logos')
-      .getPublicUrl(filePath);
+  const { error } = await supabase.storage.from("items").upload(fileName, file);
+  if (error) throw error;
 
-    const logoUrl = publicUrlData.publicUrl;
-
-    // Replace the logo object with the URL
-    const shopData = {
-      ...shop,
-      logo: logoUrl,
-    };
-
-    // Insert into shops table
-    const { data, error } = await supabase
-      .from('shops')
-      .insert(shopData)
-      .select();
-
-    if (error) {
-      console.error('Insert error:', error.message);
-      return { error };
-    }
-
-    return { data };
-  } catch (err) {
-    console.error('Unexpected error:', err);
-    return { error: err };
-  }
-}
-
-
-
-export const fetchOrdersWithTableNumberAndItems = async () => {
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      table:table_id (
-        table_number
-      ),
-      order_items (
-        id,
-        quantity,
-        unit_price,
-        menu_id,
-        order_id
-      )
-    `)
-    .order('created_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching orders with items:', error);
-    throw error;
-  }
-
-  return data;
-}
+  return `${SUPABASE_URL}/storage/v1/object/public/items/${fileName}`;
+};

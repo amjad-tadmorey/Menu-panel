@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const Button = ({
   type = 'button',
   onClick,
@@ -9,7 +10,7 @@ const Button = ({
   ...rest
 }) => {
   const baseStyle = `
-    font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed
+    font-semibold rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer
   `;
 
   const sizeClasses = {

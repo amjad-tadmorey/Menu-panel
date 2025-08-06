@@ -1,15 +1,15 @@
-
-
-// ─────────────────────────────────────────────
-
 import { endOfDay, startOfDay } from "date-fns"
 import { supabase } from "./supabase"
+
+const restaurantId = localStorage.getItem("restaurant_id")
+console.log(restaurantId);
 
 // ✅ 1. Fetch basic orders
 export async function fetchOrders() {
     const { data, error } = await supabase
         .from('orders')
         .select('*')
+        .eq('restaurant_id', restaurantId)
         .order('created_at', { ascending: true })
 
     if (error) throw error
@@ -27,7 +27,7 @@ export async function fetchOrdersWithTable() {
       table:table_id (
         table_number
       )
-    `)
+    `).eq('restaurant_id', restaurantId)
         .order('created_at', { ascending: true })
 
     if (error) throw error
@@ -49,7 +49,7 @@ export async function fetchOrdersWithItems() {
         menu_id,
         order_id
       )
-    `)
+    `).eq('restaurant_id', restaurantId)
         .order('created_at', { ascending: true })
 
     if (error) throw error
@@ -74,7 +74,7 @@ export async function fetchOrdersWithItemsAndTable() {
         menu_id,
         order_id
       )
-    `)
+    `).eq('restaurant_id', restaurantId)
         .order('created_at', { ascending: true })
 
     if (error) throw error
@@ -102,7 +102,7 @@ export async function fetchOrdersWithFullDetails() {
           price
         )
       )
-    `).eq('restaurant_id', 1)
+    `).eq('restaurant_id', restaurantId)
         .order('created_at', { ascending: true });
 
     if (error) {
@@ -121,7 +121,11 @@ export async function fetchOrdersWithFullDetails() {
 // ─────────────────────────────────────────────
 // ✅ . Create Order
 
-export async function createOrder({ restaurant_id = 1, table_id = 1 }) {
+export async function createOrder({ restaurant_id = 1, table_id = 1, items = [], notes }) {
+    if (!Array.isArray(items) || items.length === 0) {
+        throw new Error('You must provide at least one order item.')
+    }
+
     const start = startOfDay(new Date()).toISOString()
     const end = endOfDay(new Date()).toISOString()
 
@@ -142,14 +146,20 @@ export async function createOrder({ restaurant_id = 1, table_id = 1 }) {
 
     const nextOrderNumber = (latestOrder?.order_number || 0) + 1
 
-    // 2. Create new order
+    // 2. Calculate total_price
+    const total_price = items.reduce((sum, item) => {
+        return sum + item.unit_price * item.quantity
+    }, 0)
+
+    // 3. Create new order
     const { data: newOrder, error: insertOrderError } = await supabase
         .from('orders')
         .insert([
             {
                 restaurant_id,
                 table_id,
-                total_price: 300,
+                total_price,
+                notes,
                 order_number: nextOrderNumber,
             },
         ])
@@ -160,25 +170,17 @@ export async function createOrder({ restaurant_id = 1, table_id = 1 }) {
         throw new Error('Error inserting order: ' + insertOrderError.message)
     }
 
-    // 3. Insert order_items
-    const sampleItems = [
-        {
-            order_id: newOrder.id,
-            menu_id: 1,
-            quantity: 2,
-            unit_price: 100,
-        },
-        {
-            order_id: newOrder.id,
-            menu_id: 2,
-            quantity: 1,
-            unit_price: 100,
-        },
-    ]
+    // 4. Insert order_items with the new order_id
+    const orderItems = items.map(item => ({
+        order_id: newOrder.id,
+        menu_id: item.menu_id,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+    }))
 
     const { error: insertItemsError } = await supabase
         .from('order_items')
-        .insert(sampleItems)
+        .insert(orderItems)
 
     if (insertItemsError) {
         throw new Error('Error inserting order items: ' + insertItemsError.message)

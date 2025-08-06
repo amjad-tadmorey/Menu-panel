@@ -9,7 +9,7 @@ export default function WaiterUI() {
     if (isPending) return <Spinner />
 
     return (
-        <div className="max-w-7xl mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+        <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
             <h1 className="text-3xl font-semibold mb-6 text-gray-800">Waiter UI</h1>
 
             <div className="overflow-x-auto">
