@@ -41,7 +41,7 @@ export default function Table({ data }) {
 }
 
 function formatCell(value) {
-    if (Array.isArray(value)) return `${value.length} item(s)`;
+    if (Array.isArray(value)) return `${value.length}`;
     if (typeof value === 'object' && value !== null) return '[Object]';
     if (typeof value === 'boolean') return value ? 'Yes' : 'No';
     return value?.toString?.() || '';
