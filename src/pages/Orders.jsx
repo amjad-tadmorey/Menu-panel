@@ -2,7 +2,7 @@
 // OrdersPage.jsx
 import { useState, useMemo } from "react"
 import { useOrders } from "../hooks/remote/useOrders"
-import { useGet } from "../hooks/remote/useGet"
+import { useGet } from "../hooks/remote/generals/useGet"
 import { fetchOrdersWithFullDetails } from "../lib/ordersApi"
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { restaurantId } from "../constants/remote";
-import { uploadImage } from "../lib/supaQuery";
-import { useInsert } from "../hooks/remote/useInsert";
+import { useInsert } from "../hooks/remote/generals/useInsert";
 import { FOOD_CATEGORIES } from "../constants/local";
 
 import Input from '../ui/Input'
+import { uploadImage } from "../lib/productsApi";
 
 
 export default function AddProducts() {

@@ -1,10 +1,11 @@
-import { restaurantId } from "../constants/remote"
+import { restaurantId, SUPABASE_URL } from "../constants/remote"
 import { supabase } from "./supabase"
+import { v4 as uuidv4 } from 'uuid';
 
 export async function fetchProductsWithItems() {
-    const { data, error } = await supabase
-        .from('menu')
-        .select(`
+  const { data, error } = await supabase
+    .from('menu')
+    .select(`
       *,
       order_items (
         id,
@@ -14,8 +15,28 @@ export async function fetchProductsWithItems() {
         order_id
       )
     `).eq('restaurant_id', restaurantId)
-        .order('created_at', { ascending: true })
+    .order('created_at', { ascending: true })
 
-    if (error) throw error
-    return data
+  if (error) throw error
+  return data
 }
+
+
+// // lib/uploadImage.js
+// export const createMenuItem = async (data) => {
+//   const { error } = await supabase.from("menu").insert(data);
+//   if (error) throw error;
+//   return true;
+// };
+
+export const uploadImage = async (file) => {
+  if (!file) throw new Error("No image file provided");
+
+  const ext = file.name.split(".").pop();
+  const fileName = `${uuidv4()}.${ext}-${restaurantId}`;
+
+  const { error } = await supabase.storage.from("items").upload(fileName, file);
+  if (error) throw error;
+
+  return `${SUPABASE_URL}/storage/v1/object/public/items/${fileName}`;
+};

@@ -1,17 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
-import { supaUpdate } from '../../lib/supaQuery'
+import { supaDelete } from '../../../lib/supaQuery'
 
-
-export function useUpdate(table, invalidateKey = null) {
+export function useDelete(table, invalidateKey = null) {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ match, updates }) => supaUpdate(table, match, updates),
+        mutationFn: (match) => supaDelete(table, match),
         onSuccess: () => {
             if (invalidateKey) {
                 queryClient.invalidateQueries([invalidateKey])
-                toast.success('done')
             }
         },
     })

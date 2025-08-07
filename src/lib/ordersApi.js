@@ -1,8 +1,7 @@
 import { endOfDay, startOfDay } from "date-fns"
 import { supabase } from "./supabase"
+import { restaurantId } from "../constants/remote"
 
-const restaurantId = localStorage.getItem("restaurant_id")
-console.log(restaurantId);
 
 // ✅ 1. Fetch basic orders
 export async function fetchOrders() {

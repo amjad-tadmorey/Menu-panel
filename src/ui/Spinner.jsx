@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Spinner = () => {
   return (
     <div className="flex items-center justify-center w-screen" style={{ height: 'calc(100vh - 400px)' }}>

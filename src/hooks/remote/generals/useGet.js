@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { supaQuery } from '../../lib/supaQuery'
+import { supaQuery } from '../../../lib/supaQuery'
 
 
 export function useGet(table, options = {}) {

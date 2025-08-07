@@ -6,12 +6,10 @@ export default function Image({ src, alt, className = "" }) {
 
     return (
         <div className={`relative overflow-hidden ${className}`}>
-            {/* Loader shimmer */}
             {!loaded && (
                 <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-md z-10" />
             )}
 
-            {/* الصورة الفعلية */}
             <img
                 src={src}
                 alt={alt}

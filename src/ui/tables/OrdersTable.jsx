@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
-import NoData from '../ui/NoData'
-import Button from "./Button";
+import NoData from '../NoData'
+import Button from "../Button";
 import { useUpdate } from "../hooks/remote/useUpdate";
 
 const STATUS_FLOW = {
@@ -23,7 +23,7 @@ const STATUS_LABELS = {
 
 export default function OrdersTable({ orders = [], STATUS_OPTIONS }) {
     console.log(STATUS_OPTIONS);
-    
+
     const { mutate: updateStatus } = useUpdate('orders', 'orders');
     const [selectedStatuses, setSelectedStatuses] = useState(STATUS_OPTIONS);
     const [showDropdown, setShowDropdown] = useState(false);
@@ -35,7 +35,7 @@ export default function OrdersTable({ orders = [], STATUS_OPTIONS }) {
         if (allSelected) {
             setSelectedStatuses([]);
         } else {
-            setSelectedStatuses([...STATUS_OPTIONS]); 
+            setSelectedStatuses([...STATUS_OPTIONS]);
         }
     }
 

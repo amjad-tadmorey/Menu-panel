@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
 import { useState } from "react";
-import { FOOD_CATEGORIES } from "../constants/local";
+import { FOOD_CATEGORIES } from "../../constants/local";
 
 export default function ItemsTable({ items }) {
     console.log(items);

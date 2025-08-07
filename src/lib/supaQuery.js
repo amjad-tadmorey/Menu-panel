@@ -1,8 +1,5 @@
-import { restaurantId, SUPABASE_URL } from "../constants/remote";
+import { restaurantId } from "../constants/remote";
 import { supabase } from "./supabase"
-import { v4 as uuidv4 } from 'uuid';
-
-
 
 
 // const applyFilters = (query, filters = []) => {
@@ -11,7 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 //   })
 //   return query
 // }
-
 
 
 export const buildSelect = (relations = []) => {
@@ -86,21 +82,3 @@ export async function supaUpdate(table, match, updates) {
 }
 
 
-// lib/uploadImage.js
-export const createMenuItem = async (data) => {
-  const { error } = await supabase.from("menu").insert(data);
-  if (error) throw error;
-  return true;
-};
-
-export const uploadImage = async (file) => {
-  if (!file) throw new Error("No image file provided");
-
-  const ext = file.name.split(".").pop();
-  const fileName = `${uuidv4()}.${ext}-${restaurantId}`;
-
-  const { error } = await supabase.storage.from("items").upload(fileName, file);
-  if (error) throw error;
-
-  return `${SUPABASE_URL}/storage/v1/object/public/items/${fileName}`;
-};

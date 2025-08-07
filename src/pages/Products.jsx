@@ -2,7 +2,7 @@ import AddProducts from "../components/AddProducts";
 import { Modal } from "../ui/Modal";
 import Button from "../ui/Button";
 import Spinner from "../ui/Spinner";
-import ItemsTable from "../ui/ItemsTable";
+import ItemsTable from "../ui/tables/ItemsTable";
 import { useProducts } from "../hooks/remote/useProducts";
 import { fetchProductsWithItems } from "../lib/productsApi";
 
