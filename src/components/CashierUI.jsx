@@ -1,7 +1,7 @@
 import Spinner from '../ui/Spinner'
 import { useOrders } from '../hooks/remote/useOrders'
 import { fetchOrdersWithFullDetails } from '../lib/ordersApi'
-import OrdersTable from '../ui/OrdersTable'
+import OrdersTable from '../ui/tables/OrdersTable'
 import { STATUS_OPTIONS } from '../constants/local'
 
 export default function CashierUI() {

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useContext, useState, cloneElement } from "react";
+import React, { createContext, useContext, useState, cloneElement } from "react";
 
 const ModalContext = createContext();
 
@@ -28,6 +28,10 @@ Modal.Content = function ModalContent({ children }) {
 
     if (!isOpen) return null;
 
+    const contentWithProps = React.Children.map(children, (child) =>
+        React.isValidElement(child) ? cloneElement(child, { close }) : child
+    );
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30">
             <div className="bg-white rounded-lg shadow-lg w-fit p-6 relative">
@@ -37,7 +41,7 @@ Modal.Content = function ModalContent({ children }) {
                 >
                     ✕
                 </button>
-                {children}
+                {contentWithProps}
             </div>
         </div>
     );

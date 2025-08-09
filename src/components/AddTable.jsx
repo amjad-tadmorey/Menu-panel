@@ -1,18 +1,19 @@
+/* eslint-disable react/prop-types */
+import toast from "react-hot-toast";
 import { useCreateTable } from "../hooks/remote/useCreateTable";
 import Button from "../ui/Button";
 
 
-export default function AddTable() {
-    const { mutate: insertTable } = useCreateTable();
-    const handleSubmit = async (e) => {
+export default function AddTable({ close }) {
+    const { mutate: createTable } = useCreateTable();
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try {
-            insertTable()
-        } catch (err) {
-            console.error(err);
-            alert("Error: " + err.message);
-        }
+        createTable();
+        toast.success('done')
+        close()
     };
+
+
 
     return (
         <div className="mx-auto p-6 bg-white rounded-lg shadow-md space-y-5">

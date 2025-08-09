@@ -194,6 +194,8 @@ export async function createOrder({ restaurant_id = 1, table_id = 1, items = [],
 // ─────────────────────────────────────────────
 // ✅ . Update Order
 export async function updateOrder(orderId, updatedFields) {
+    console.log(orderId, updatedFields);
+    
     const { data, error } = await supabase
         .from('orders')
         .update(updatedFields)

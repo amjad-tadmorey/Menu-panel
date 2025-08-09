@@ -1,11 +1,11 @@
 // components/OrderPage.jsx
 import { useState } from "react"
 import { useCreateOrder } from "../hooks/remote/useCreateOrder"
-import { useGet } from "../hooks/remote/useGet"
 import Spinner from "../ui/Spinner"
 import toast from "react-hot-toast"
 import Button from "../ui/Button"
 import Image from "../ui/Image"
+import { useGet } from "../hooks/remote/generals/useGet"
 
 
 

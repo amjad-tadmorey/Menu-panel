@@ -9,7 +9,7 @@ export default function UIPresentation() {
             <KitchenUI />
             <WaiterUI />
             <CashierUI />
-            <CustomerUI />
+            {/* <CustomerUI /> */}
         </div>
     )
 }

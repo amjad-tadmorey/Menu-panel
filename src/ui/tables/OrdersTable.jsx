@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import NoData from '../NoData'
 import Button from "../Button";
-import { useUpdate } from "../hooks/remote/useUpdate";
+import { useUpdate } from "../../hooks/remote/generals/useUpdate";
 
 const STATUS_FLOW = {
     new: "in-kitchen",

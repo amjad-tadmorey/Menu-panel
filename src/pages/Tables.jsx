@@ -4,7 +4,7 @@ import Spinner from "../ui/Spinner";
 import AddTable from "../components/AddTable";
 import { useTables } from "../hooks/remote/useTables";
 import { fetchTablesWithOrders } from "../lib/TablesApi";
-import Table from "../ui/tables/Table";
+import TablesTable from "../ui/tables/TablesTable";
 
 export default function Tables() {
 
@@ -32,7 +32,7 @@ export default function Tables() {
 
           </Modal>
         </div>
-        <Table data={tables} />
+        <TablesTable data={tables} />
       </div>
 
 
