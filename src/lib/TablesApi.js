@@ -54,7 +54,7 @@ export async function createTable() {
   }
 
   // 3. توليد QR كـ Blob
-  const qrText = `https://yourapp.com/?restaurant_id=${restaurantId}&table_id=${table.id}`;
+  const qrText = `https://menu-eta-wine.vercel.app?restaurant_id=${restaurantId}&table_id=${table.id}`;
   const dataUrl = await QRCode.toDataURL(qrText, { width: 300 });
   const blob = await fetch(dataUrl).then((res) => res.blob());
 

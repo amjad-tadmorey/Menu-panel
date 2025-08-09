@@ -18,7 +18,7 @@ export default function KitchenUI() {
 
             {orders.length === 0 && (
                 <div className="text-center text-gray-400">
-                    <NoData message="No Orders Yet"/>
+                    <NoData message="No Orders Yet" />
                 </div>
             )}
 
