@@ -1,12 +1,22 @@
 /* eslint-disable react/prop-types */
 import { useMemo, useState } from "react";
-import { formateDate } from "../../helpers/utilHelpers";
-import NoData from "../NoData";
-import LogoutButton from "../../components/LogoutButton";
-import StatusDropdown from "../StatusDropdown";
+import { formateDate } from "../helpers/utilHelpers";
+import NoData from "./NoData";
+import Badge from "./Badge";
 
 
-export default function OrdersTable({ orders, label }) {
+const STATUS_STYLE = {
+    new: "bg-blue-50 text-blue-700 ring-blue-100",
+    "in-kitchen": "bg-amber-50 text-amber-700 ring-amber-100",
+    ready: "bg-green-50 text-green-700 ring-green-100",
+    delivered: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+    'billing-requested': 'bg-indigo-50 text-indigo-700 ring-indigo-100 text-nowrap',
+    paid: "bg-purple-50 text-purple-700 ring-purple-100",
+    completed: "bg-gray-50 text-gray-700 ring-gray-100",
+    cancelled: "bg-red-50 text-red-700 ring-red-100"
+};
+
+export default function OrdersTable({ orders }) {
     const [query, setQuery] = useState("");
     const [sortBy, setSortBy] = useState({ key: "id", asc: true });
     const [page, setPage] = useState(1);
@@ -18,6 +28,7 @@ export default function OrdersTable({ orders, label }) {
             if (!q) return true;
             return (
                 String(r.id).includes(q) ||
+                r.customer.toLowerCase().includes(q) ||
                 r.status.toLowerCase().includes(q)
             );
         });
@@ -43,12 +54,10 @@ export default function OrdersTable({ orders, label }) {
 
     return (
         <div className="min-h-screen py-8 px-6 bg-gradient-to-br from-gray-50 to-white">
-
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <LogoutButton />
-                        <h1 className="text-2xl font-semibold text-gray-900">{label}</h1>
+                    <div>
+                        <h1 className="text-2xl font-semibold text-gray-900">Orders</h1>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -79,10 +88,10 @@ export default function OrdersTable({ orders, label }) {
                     <div className="hidden md:block sticky top-0 bg-white/60 backdrop-blur-md z-10">
                         <div className="grid grid-cols-12 gap-4 px-6 py-3 items-center">
                             <div className="col-span-1 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("id")}># {sortBy.key === "id" && (sortBy.asc ? "▲" : "▼")}</div>
-                            <div className="col-span-3 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("created_at")}>Created At {sortBy.key === "created_at" && (sortBy.asc ? "▲" : "▼")}</div>
-                            <div className="col-span-2 text-xs font-semibold text-gray-600">Table Number</div>
+                            <div className="col-span-4 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("created_at")}>Created At {sortBy.key === "created_at" && (sortBy.asc ? "▲" : "▼")}</div>
+                            <div className="col-span-3 text-xs font-semibold text-gray-600">Table Number</div>
                             <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("total")}>Total {sortBy.key === "total" && (sortBy.asc ? "▲" : "▼")}</div>
-                            <div className="col-span-4 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("status")}>Status {sortBy.key === "status" && (sortBy.asc ? "▲" : "▼")}</div>
+                            <div className="col-span-1 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("status")}>Status {sortBy.key === "status" && (sortBy.asc ? "▲" : "▼")}</div>
                         </div>
                     </div>
 
@@ -97,21 +106,30 @@ export default function OrdersTable({ orders, label }) {
 
                                     </div>
 
-                                    <div className="md:col-span-3 mt-3 md:mt-0">
+                                    <div className="md:col-span-4 mt-3 md:mt-0">
                                         <div className="mt-1 text-xs text-gray-500 hidden md:block">• {formateDate(row.created_at)}</div>
                                     </div>
 
-                                    <div className="md:col-span-2 flex flex-col items-start mt-3 md:mt-0">
+                                    <div className="md:col-span-3 flex flex-col items-start mt-3 md:mt-0">
                                         <div className="text-gray-700 text-xl font-semibold">{row.table.table_number}</div>
                                         <img src={row.table.qr_image} alt="" className="w-12 h-12" />
                                     </div>
                                     <div className="md:col-span-2 mt-3 md:mt-0 text-sm font-semibold text-gray-900">EGP {row.total_price}</div>
 
-                                    <div className="md:col-span-4 mt-4 md:mt-0 flex md:justify-end md:items-center">
+                                    <div className="md:col-span-1 mt-3 md:mt-0">
+                                        <div className="flex items-center gap-2">
+                                            <Badge status={row.status} />
+                                        </div>
+                                    </div>
+
+
+
+                                    <div className="md:col-span-1 mt-3 md:mt-0 text-sm text-gray-500 hidden md:block">{row.date}</div>
+
+                                    <div className="md:col-span-12 mt-4 md:mt-0 md:col-span-0 flex md:justify-end md:items-center">
                                         <div className="flex items-center gap-2">
                                             <button className="h-9 px-3 rounded-md bg-white border border-gray-200 shadow-sm text-sm hover:scale-105 transition">Details</button>
-                                            {/* <button className="h-9 px-3 rounded-md text-sm bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:brightness-105 transition">Action</button> */}
-                                            <StatusDropdown status={row.status} id={row.id} />
+                                            <button className="h-9 px-3 rounded-md text-sm bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:brightness-105 transition">Action</button>
                                         </div>
                                     </div>
                                 </div>

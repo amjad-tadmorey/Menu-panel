@@ -89,7 +89,7 @@ export async function fetchOrdersWithFullDetails() {
         .select(`
       *,
       table:table_id (
-        table_number
+        *
       ),
       order_items (
         id,
