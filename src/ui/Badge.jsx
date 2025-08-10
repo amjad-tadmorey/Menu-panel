@@ -1,24 +1,28 @@
 /* eslint-disable react/prop-types */
 
 const STATUS_COLORS = {
-    new: "bg-gray-200 text-gray-800",
-    "in-kitchen": "bg-yellow-200 text-yellow-800",
-    ready: "bg-blue-200 text-blue-800",
-    delivered: "bg-green-200 text-green-800",
-    "billing-requested": "bg-purple-200 text-purple-800",
-    paid: "bg-indigo-200 text-indigo-800",
-    completed: "bg-green-600 text-white",
+    new: "inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20",
+    "in-kitchen": "inline-flex items-center rounded-md bg-pink-400/10 px-2 py-1 text-xs font-medium text-pink-400 inset-ring inset-ring-pink-400/20",
+    ready: "inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-800 inset-ring inset-ring-yellow-600/20",
+    delivered: "inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 inset-ring inset-ring-indigo-700/10",
+    "billing-requested": "inline-flex items-center rounded-md bg-purple-50 px-2 py-1 text-xs font-medium text-purple-700 inset-ring inset-ring-purple-700/10",
+    paid: "inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 inset-ring inset-ring-gray-500/10",
+    completed: "inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 inset-ring inset-ring-blue-700/10",
+    cancelled: "inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 inset-ring inset-ring-red-600/10",
 };
 
+
+
+
+
+
 export default function Badge({ status }) {
-    const color = STATUS_COLORS[status] || "bg-gray-100 text-gray-800";
-    const label = status.replace("-", " ");
 
     return (
         <span
-            className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${color}`}
+            className={`${STATUS_COLORS[status]}`}
         >
-            {label}
+            {status}
         </span>
     );
 }

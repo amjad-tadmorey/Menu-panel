@@ -1,6 +1,5 @@
 import { Toaster } from "react-hot-toast"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import AppLayout from "./ui/AppLayout"
 import Home from "./pages/Home"
 import Orders from "./pages/Orders"
 import Products from "./pages/Products"
@@ -23,9 +22,7 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
+              <ProtectedRoute />
             }
           >
             <Route index element={<Home />} />

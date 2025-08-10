@@ -106,6 +106,8 @@ function FiltersBar({
       >
         Reset
       </Button>
+
+
     </div>
   )
 }
@@ -120,8 +122,8 @@ function OrdersTable({ orders }) {
             <th className="p-3 text-left">Order No.</th>
             <th className="p-3 text-left">Date</th>
             <th className="p-3 text-left">Table No.</th>
-            <th className="p-3 text-left">Status</th>
             <th className="p-3 text-left">Total Price</th>
+            <th className="p-3 text-left">Status</th>
           </tr>
         </thead>
         <tbody>
@@ -139,11 +141,11 @@ function OrdersTable({ orders }) {
                   {new Date(order.created_at).toLocaleString()}
                 </td>
                 <td className="p-3">{order.table?.table_number || "-"}</td>
+                <td className="p-3 font-bold text-emerald-500">
+                  {order.total_price} &pound;
+                </td>
                 <td className="p-3 capitalize">
                   <Badge status={order.status} />
-                </td>
-                <td className="p-3 font-bold text-blue-500">
-                  {order.total_price} &pound;
                 </td>
               </tr>
             ))
@@ -258,6 +260,7 @@ export default function Orders() {
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen rounded-2xl shadow-xl">
       <h1 className="text-3xl font-bold text-gray-800">Orders Managment</h1>
+      <h1 className="text-xl">{filteredOrders.length} results</h1>
       <FiltersBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -275,6 +278,7 @@ export default function Orders() {
       />
       <ExportButtons orders={filteredOrders} />
       <OrdersTable orders={filteredOrders} />
+
     </div>
   )
 }

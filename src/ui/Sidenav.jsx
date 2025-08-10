@@ -57,14 +57,14 @@ export default function Sidenav() {
                 })}
             </nav>
             <div>
-                
+
             </div>
             {/* Footer */}
-            {!collapsed && (
+            {/* {!collapsed && (
                 <div className="p-4 text-xs text-slate-500">
                     &copy; 2025 Menu. All rights reserved.
                 </div>
-            )}
+            )} */}
         </aside>
     );
 }

@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import NoData from '../NoData'
 import Button from "../Button";
 import { useUpdate } from "../../hooks/remote/generals/useUpdate";
+import Badge from "../Badge";
 
 const STATUS_FLOW = {
     new: "in-kitchen",
@@ -22,9 +23,9 @@ const STATUS_LABELS = {
 };
 
 export default function OrdersTable({ orders = [], STATUS_OPTIONS }) {
-    console.log(STATUS_OPTIONS);
 
     const { mutate: updateStatus } = useUpdate('orders', 'orders');
+    const { mutate: updateStatusTable } = useUpdate('tables', 'tables');
     const [selectedStatuses, setSelectedStatuses] = useState(STATUS_OPTIONS);
     const [showDropdown, setShowDropdown] = useState(false);
     const dropdownRef = useRef(null);
@@ -74,12 +75,20 @@ export default function OrdersTable({ orders = [], STATUS_OPTIONS }) {
     function onToggleStatus(order) {
         const next = getNextStatus(order.status);
         if (!next) return;
-        console.log(next);
+        console.log(order);
 
         updateStatus({
             match: { id: order.id },
             updates: { status: next }
         });
+        console.log(next);
+        if (next === 'completed') {
+            updateStatusTable({
+                match: { id: order.table_id },
+                updates: { is_active: false }
+            })
+        }
+
     }
 
     return (
@@ -166,16 +175,9 @@ export default function OrdersTable({ orders = [], STATUS_OPTIONS }) {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                 {order.table?.table_number ?? "—"}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{order.total_price}$</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{order.total_price} EGP</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm">
-                                <span
-                                    className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${order.status === "completed"
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-yellow-100 text-yellow-800"
-                                        }`}
-                                >
-                                    {order.status}
-                                </span>
+                                <Badge status={order.status}/>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-center text-sm font-medium space-x-2">
                                 {/* {order.status !== 'in-kitchen' && order.status !== 'ready' && getNextStatus(order.status) && (

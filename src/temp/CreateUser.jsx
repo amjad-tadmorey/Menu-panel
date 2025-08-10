@@ -4,7 +4,7 @@ import { supabase } from "../lib/supabase"
 export default function CreateUser() {
     const [name, setName] = useState("")
     const [password, setPassword] = useState("")
-    const [role, setRole] = useState("staff")
+    const [role, setRole] = useState("")
     const [restaurantId, setRestaurantId] = useState("")
     const [loading, setLoading] = useState(false)
     const [errorMsg, setErrorMsg] = useState("")
@@ -60,11 +60,12 @@ export default function CreateUser() {
             setName("")
             setPassword("")
             setRestaurantId("")
-            setRole("staff")
+            setRole("")
         }
 
         setLoading(false)
     }
+    console.log(role);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -100,8 +101,11 @@ export default function CreateUser() {
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
                 >
-                    <option value="admin">Admin</option>
-                    <option value="staff">Staff</option>
+                    <option value="">Choose role</option>
+                    <option value="manager">Manager</option>
+                    <option value="cashier">Cashier</option>
+                    <option value="chef">Chef</option>
+                    <option value="waiter">Waiter</option>
                 </select>
 
                 <input

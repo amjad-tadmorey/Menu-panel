@@ -6,6 +6,7 @@ export const STATUS_OPTIONS = [
     "billing-requested",
     "paid",
     "completed",
+    'cancelled',
 ]
 
 

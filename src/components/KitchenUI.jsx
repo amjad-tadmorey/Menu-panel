@@ -4,6 +4,7 @@ import { fetchOrdersWithFullDetails } from "../lib/ordersApi";
 import Button from "../ui/Button";
 import NoData from "../ui/NoData";
 import Spinner from "../ui/Spinner";
+import LogoutButton from "./LogoutButton";
 
 export default function KitchenUI() {
     const { data: orders, isPending } = useOrders(fetchOrdersWithFullDetails, 'orders');
@@ -13,8 +14,11 @@ export default function KitchenUI() {
     if (isPending) return <Spinner />
 
     return (
-        <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
-            <h1 className="text-3xl font-semibold mb-6 text-gray-800">Kitchen UI</h1>
+        <div className="w-full h-screen mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
+            <div className="flex items-center justify-between">
+                <h1 className="text-3xl font-semibold mb-6 text-gray-800">Kitchen UI</h1>
+                <LogoutButton />
+            </div>
 
             {orders.length === 0 && (
                 <div className="text-center text-gray-400">
@@ -22,7 +26,7 @@ export default function KitchenUI() {
                 </div>
             )}
 
-            <div className="grid gap-6">
+            <div className="grid gap-6 overflow-scroll">
                 {orders.filter(o => o.status === 'in-kitchen').map((order) => (
                     <div
                         key={order.id}
