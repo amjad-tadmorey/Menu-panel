@@ -1,45 +1,54 @@
 /* eslint-disable react/prop-types */
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { formateDate } from "../../helpers/utilHelpers";
 import NoData from "../NoData";
 import LogoutButton from "../../components/LogoutButton";
 import StatusDropdown from "../StatusDropdown";
-
+import OrderDetails from "../OrderDetails";
+const PAGE_SIZE = 7;
 
 export default function OrdersTable({ orders, label }) {
-    const [query, setQuery] = useState("");
+    const [openDropdown, setOpenDropdown] = useState(null);
     const [sortBy, setSortBy] = useState({ key: "id", asc: true });
     const [page, setPage] = useState(1);
-    const PAGE_SIZE = 7;
+    const [TablefilteredOrders, setTableFilteredOrders] = useState([]);
+    const [search, setSearch] = useState("");
 
-    const filtered = useMemo(() => {
-        const q = query.trim().toLowerCase();
-        let out = orders.filter((r) => {
-            if (!q) return true;
-            return (
-                String(r.id).includes(q) ||
-                r.status.toLowerCase().includes(q)
-            );
-        });
-
-        out.sort((a, b) => {
-            const vA = a[sortBy.key];
-            const vB = b[sortBy.key];
-            if (vA < vB) return sortBy.asc ? -1 : 1;
-            if (vA > vB) return sortBy.asc ? 1 : -1;
-            return 0;
-        });
-
-        return out;
-    }, [query, sortBy]);
-
-    const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-    const visible = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const toggleDropdown = (id) => {
+        setOpenDropdown((prev) => (prev === id ? null : id));
+    };
 
     function toggleSort(key) {
         setPage(1);
         setSortBy((s) => (s.key === key ? { key, asc: !s.asc } : { key, asc: true }));
     }
+
+
+    useEffect(() => {
+        if (!orders) {
+            setTableFilteredOrders([]);
+            return;
+        }
+
+        const lowerSearch = search.toLowerCase();
+
+        setTableFilteredOrders(
+            orders
+                .filter((o) => {
+                    return (
+                        o.order_number?.toString().includes(lowerSearch) ||
+                        o.table?.table_number?.toString().includes(lowerSearch) ||
+                        o.status?.toLowerCase().includes(lowerSearch) || // ✅ status search
+                        o.order_items?.some((item) =>
+                            item.menu?.name?.toLowerCase().includes(lowerSearch)
+                        )
+                    );
+                })
+        );
+    }, [orders, search]);
+
+    const pages = Math.max(1, Math.ceil(TablefilteredOrders.length / PAGE_SIZE));
+    const visible = TablefilteredOrders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
     return (
         <div className="min-h-screen py-8 px-6 bg-gradient-to-br from-gray-50 to-white">
@@ -54,9 +63,10 @@ export default function OrdersTable({ orders, label }) {
                     <div className="flex items-center gap-3">
                         <div className="relative">
                             <input
-                                value={query}
-                                onChange={(e) => { setQuery(e.target.value); setPage(1); }}
-                                placeholder="Search by id, customer or status..."
+                                type="text"
+                                placeholder="Search orders..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 className="h-10 w-72 pl-4 pr-10 rounded-lg border border-gray-200 bg-white text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
                             />
                             <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">⌕</div>
@@ -64,17 +74,17 @@ export default function OrdersTable({ orders, label }) {
 
                         <div className="flex items-center gap-2">
                             <button
-                                onClick={() => { setQuery(""); setPage(1); }}
+                                onClick={() => { setSearch(""); }}
                                 className="h-10 px-3 rounded-md text-sm bg-white border border-gray-200 shadow-sm hover:shadow-md"
                             >Reset</button>
 
-                            <div className="text-sm text-gray-600">Showing <span className="font-medium text-gray-900">{filtered.length}</span></div>
+                            <div className="text-sm text-gray-600">Showing <span className="font-medium text-gray-900">{TablefilteredOrders.length}</span></div>
                         </div>
                     </div>
                 </div>
 
                 {/* container with glass card */}
-                <div className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-hidden">
+                <div style={{ height: "calc(100vh - 125px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-hidden ">
                     {/* sticky header for wide screens */}
                     <div className="hidden md:block sticky top-0 bg-white/60 backdrop-blur-md z-10">
                         <div className="grid grid-cols-12 gap-4 px-6 py-3 items-center">
@@ -109,9 +119,20 @@ export default function OrdersTable({ orders, label }) {
 
                                     <div className="md:col-span-4 mt-4 md:mt-0 flex md:justify-end md:items-center">
                                         <div className="flex items-center gap-2">
-                                            <button className="h-9 px-3 rounded-md bg-white border border-gray-200 shadow-sm text-sm hover:scale-105 transition">Details</button>
-                                            {/* <button className="h-9 px-3 rounded-md text-sm bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-md hover:brightness-105 transition">Action</button> */}
-                                            <StatusDropdown status={row.status} id={row.id} />
+                                            <OrderDetails
+                                                order={row}
+                                                isOpen={openDropdown === `orderDetails-${row.id}`}
+                                                onToggle={() => toggleDropdown(`orderDetails-${row.id}`)}
+                                                closeDropdown={() => setOpenDropdown(null)}
+
+                                            />
+                                            <StatusDropdown
+                                                status={row.status}
+                                                id={row.id}
+                                                isOpen={openDropdown === `status-${row.id}`}
+                                                onToggle={() => toggleDropdown(`status-${row.id}`)}
+                                                closeDropdown={() => setOpenDropdown(null)}
+                                            />
                                         </div>
                                     </div>
                                 </div>

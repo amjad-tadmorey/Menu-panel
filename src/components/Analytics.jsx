@@ -11,8 +11,6 @@ export default function Analytics({ orders, menuItems, tables }) {
     const [topItems, setTopItems] = useState([]);
     const [statusData, setStatusData] = useState([]);
 
-    console.log(orders);
-
 
     useEffect(() => {
         if (!orders || !menuItems) return;

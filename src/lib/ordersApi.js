@@ -15,74 +15,7 @@ export async function fetchOrders() {
     return data
 }
 
-
-// ─────────────────────────────────────────────
-// ✅ 2. Fetch orders with table number
-export async function fetchOrdersWithTable() {
-    const { data, error } = await supabase
-        .from('orders')
-        .select(`
-      *,
-      table:table_id (
-        table_number
-      )
-    `).eq('restaurant_id', restaurantId)
-        .order('created_at', { ascending: true })
-
-    if (error) throw error
-    return data
-}
-
-
-// ─────────────────────────────────────────────
-// ✅ 3. Fetch orders with order items
-export async function fetchOrdersWithItems() {
-    const { data, error } = await supabase
-        .from('orders')
-        .select(`
-      *,
-      order_items (
-        id,
-        quantity,
-        unit_price,
-        menu_id,
-        order_id
-      )
-    `).eq('restaurant_id', restaurantId)
-        .order('created_at', { ascending: true })
-
-    if (error) throw error
-    return data
-}
-
-
-// ─────────────────────────────────────────────
-// ✅ 4. Fetch orders with items AND table
-export async function fetchOrdersWithItemsAndTable() {
-    const { data, error } = await supabase
-        .from('orders')
-        .select(`
-      *,
-      table:table_id (
-        table_number
-      ),
-      order_items (
-        id,
-        quantity,
-        unit_price,
-        menu_id,
-        order_id
-      )
-    `).eq('restaurant_id', restaurantId)
-        .order('created_at', { ascending: true })
-
-    if (error) throw error
-    return data
-}
-
-
-// ─────────────────────────────────────────────
-// ✅ 5. Fetch orders with items, table, AND menu name
+// ✅ 2. Fetch orders with items, table, AND menu name
 export async function fetchOrdersWithFullDetails() {
     const { data, error } = await supabase
         .from('orders')
@@ -112,15 +45,7 @@ export async function fetchOrdersWithFullDetails() {
     return data;
 }
 
-
-
-
-
-//
-
-// ─────────────────────────────────────────────
-// ✅ . Create Order
-
+// ✅ 3. Create Order
 export async function createOrder({ restaurant_id = 1, table_id = 1, items = [], notes }) {
     if (!Array.isArray(items) || items.length === 0) {
         throw new Error('You must provide at least one order item.')
@@ -189,11 +114,7 @@ export async function createOrder({ restaurant_id = 1, table_id = 1, items = [],
     return newOrder
 }
 
-
-//
-
-// ─────────────────────────────────────────────
-// ✅ . Update Order
+// ✅ 4. Update Order
 export async function updateOrder(orderId, updatedFields) {
     console.log(orderId, updatedFields);
 

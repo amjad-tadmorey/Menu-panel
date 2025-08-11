@@ -2,7 +2,7 @@ import { restaurantId, SUPABASE_URL } from "../constants/remote"
 import { supabase } from "./supabase"
 import { v4 as uuidv4 } from 'uuid';
 
-export async function fetchProductsWithItems() {
+export async function fetchProducts() {
   const { data, error } = await supabase
     .from('menu')
     .select(`
@@ -20,14 +20,6 @@ export async function fetchProductsWithItems() {
   if (error) throw error
   return data
 }
-
-
-// // lib/uploadImage.js
-// export const createMenuItem = async (data) => {
-//   const { error } = await supabase.from("menu").insert(data);
-//   if (error) throw error;
-//   return true;
-// };
 
 export const uploadImage = async (file) => {
   if (!file) throw new Error("No image file provided");

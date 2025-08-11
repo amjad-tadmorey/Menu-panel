@@ -1,24 +1,48 @@
-import { useOrders } from "../hooks/remote/useOrders";
-import { useUpdateOrder } from "../hooks/remote/useUpdateOrder";
+import { useState } from "react";
+import { useGet } from "../hooks/remote/useGet";
 import { fetchOrdersWithFullDetails } from "../lib/ordersApi";
-import Button from "../ui/Button";
 import NoData from "../ui/NoData";
 import Spinner from "../ui/Spinner";
 import LogoutButton from "./LogoutButton";
+import KitchenCard from "../ui/KitchenCard";
 
 export default function KitchenUI() {
-    const { data: orders, isPending } = useOrders(fetchOrdersWithFullDetails, 'orders');
-    const { mutate: updateOrder, isPending: isUpdating } = useUpdateOrder();
+    const { data: orders, isPending } = useGet(fetchOrdersWithFullDetails, 'orders');
 
+    const [query, setQuery] = useState("");
 
     if (isPending) return <Spinner />
 
+
+
+
     return (
-        <div className="w-full h-screen mx-auto p-6 bg-white rounded-lg shadow-md mt-8">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-semibold mb-6 text-gray-800">Kitchen UI</h1>
-                <LogoutButton />
+        <div className="min-h-screen py-8 px-6 bg-gradient-to-br from-gray-50 to-white">
+            <div className="mb-6 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    <LogoutButton />
+                    <h1 className="text-2xl font-semibold text-gray-900">Kitchen UI</h1>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    <div className="relative">
+                        <input
+                            value={query}
+                            onChange={(e) => { setQuery(e.target.value) }}
+                            placeholder="Search by id, customer or status..."
+                            className="h-10 w-72 pl-4 pr-10 rounded-lg border border-gray-200 bg-white text-sm shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                        />
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-sm">⌕</div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+
+
+                        <div className="text-sm text-gray-600">Showing <span className="font-medium text-gray-900">{orders.length}</span></div>
+                    </div>
+                </div>
             </div>
+
 
             {orders.length === 0 && (
                 <div className="text-center text-gray-400">
@@ -28,42 +52,7 @@ export default function KitchenUI() {
 
             <div className="grid gap-6 overflow-scroll">
                 {orders.filter(o => o.status === 'in-kitchen').map((order) => (
-                    <div
-                        key={order.id}
-                        className="bg-white shadow-md rounded-xl p-5 border border-gray-200"
-                    >
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-semibold">
-                                طلب رقم #{order.order_number}
-                            </h2>
-                            <span className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded-full">
-                                الطاولة: {order.table?.table_number ?? 'غير معروف'}
-                            </span>
-                        </div>
-
-                        <ul className="divide-y divide-gray-100">
-                            {order.order_items.map((item) => (
-                                <li key={item.id} className="py-2 flex justify-between items-center">
-                                    <span className="font-medium">
-                                        {item.menu?.name ?? '—'}
-                                    </span>
-                                    <span className="text-xl text-gray-600">
-                                        الكمية: <strong>{item.quantity}</strong>
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                        {order.notes && <div className="w-full mt-1 p-3 rounded-lg border border-gray-300 my-4">{order.notes}</div>}
-
-                        <Button
-                            onClick={() => updateOrder({ orderId: order.id, updatedFields: { status: 'ready' } })}
-                            disabled={isUpdating}
-                            variant="success"
-                            className="mt-4"
-                        >
-                            إنهاء التحضير
-                        </Button>
-                    </div>
+                    <KitchenCard key={order.id} order={order} />
                 ))}
             </div>
         </div>

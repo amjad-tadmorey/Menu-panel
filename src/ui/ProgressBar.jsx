@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 
 export default function ProgressBar({ progress, limit, title = "Progress" }) {
   const [displayedPercentage, setDisplayedPercentage] = useState(0);
@@ -58,9 +59,8 @@ export default function ProgressBar({ progress, limit, title = "Progress" }) {
 
       {/* Footer */}
       <div
-        className={`mt-2 text-xs text-center ${
-          isDanger ? "text-red-500 font-medium" : "text-gray-500"
-        }`}
+        className={`mt-2 text-xs text-center ${isDanger ? "text-red-500 font-medium" : "text-gray-500"
+          }`}
       >
         {progress} / {limit}
         {isDanger && " — Almost full!"}

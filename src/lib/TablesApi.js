@@ -17,7 +17,6 @@ export async function fetchTablesWithOrders() {
   return data
 }
 
-
 export async function createTable() {
   const start = startOfDay(new Date()).toISOString();
   const end = endOfDay(new Date()).toISOString();

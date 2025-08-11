@@ -2,20 +2,17 @@ import { Modal } from "../ui/Modal";
 import Button from "../ui/Button";
 import Spinner from "../ui/Spinner";
 import AddTable from "../components/AddTable";
-import { useTables } from "../hooks/remote/useTables";
+import { useGet } from "../hooks/remote/useGet";
 import { fetchTablesWithOrders } from "../lib/TablesApi";
 import TablesTable from "../ui/tables/TablesTable";
 
 export default function Tables() {
 
-  const { data: tables, isPending } = useTables(fetchTablesWithOrders, 'tables')
+  const { data: tables, isPending } = useGet(fetchTablesWithOrders, 'tables')
 
   if (isPending) return <Spinner />
 
-
-
   return (
-
     <>
       <div className="p-6 space-y-6 bg-gray-50 min-h-screen rounded-2xl shadow-xl">
         <div className="flex items-center justify-between">
@@ -34,12 +31,7 @@ export default function Tables() {
         </div>
         <TablesTable data={tables} />
       </div>
-
-
-
-
     </>
-
   );
 
 }

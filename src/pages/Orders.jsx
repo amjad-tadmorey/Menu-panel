@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 // OrdersPage.jsx
 import { useState, useMemo } from "react"
-import { useOrders } from "../hooks/remote/useOrders"
-import { useGet } from "../hooks/remote/generals/useGet"
 import { fetchOrdersWithFullDetails } from "../lib/ordersApi"
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
@@ -11,6 +9,8 @@ import Badge from "../ui/Badge";
 import Spinner from "../ui/Spinner";
 import Button from "../ui/Button";
 import NoData from "../ui/NoData";
+import { useGetTable } from "../hooks/main/useGetTable";
+import { useGet } from "../hooks/remote/useGet";
 
 // ========== FiltersBar ==========
 function FiltersBar({
@@ -220,8 +220,8 @@ export default function Orders() {
   const [sortOrder, setSortOrder] = useState("desc")
   const [dateRange, setDateRange] = useState({ from: "", to: "" })
 
-  const { data: orders, isPending: isPendingOrders } = useOrders(fetchOrdersWithFullDetails, "orders")
-  const { data: allTables, isPending: isPendingTables } = useGet("tables")
+  const { data: orders, isPending: isPendingOrders } = useGet(fetchOrdersWithFullDetails, "orders")
+  const { data: allTables, isPending: isPendingTables } = useGetTable("tables", 'tables')
 
   const filteredOrders = useMemo(() => {
     if (!orders) return []

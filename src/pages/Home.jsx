@@ -1,16 +1,14 @@
 import Analytics from "../components/Analytics"
-import { useOrders } from "../hooks/remote/useOrders"
-import { useProducts } from "../hooks/remote/useProducts"
-import { useTables } from "../hooks/remote/useTables"
+import { useGet } from "../hooks/remote/useGet"
 import { fetchOrdersWithFullDetails } from "../lib/ordersApi"
-import { fetchProductsWithItems } from "../lib/productsApi"
+import { fetchProducts } from "../lib/productsApi"
 import { fetchTablesWithOrders } from "../lib/TablesApi"
 import Spinner from "../ui/Spinner"
 
 export default function Home() {
-    const { data: orders, isPending: isPendingOrders } = useOrders(fetchOrdersWithFullDetails, "orders")
-    const { data: tables, isPending: isPendingTables } = useTables(fetchTablesWithOrders, 'tables')
-    const { data: menuItems, isPending: isPendingItems } = useProducts(fetchProductsWithItems, 'menu')
+    const { data: orders, isPending: isPendingOrders } = useGet(fetchOrdersWithFullDetails, "orders")
+    const { data: tables, isPending: isPendingTables } = useGet(fetchTablesWithOrders, 'tables')
+    const { data: menuItems, isPending: isPendingItems } = useGet(fetchProducts, 'menu')
 
     if (isPendingOrders || isPendingTables || isPendingItems) return <Spinner />
 

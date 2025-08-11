@@ -1,43 +1,46 @@
 /* eslint-disable react/prop-types */
 import { useState, useRef, useEffect } from "react";
-import { useUpdate } from '../hooks/remote/generals/useUpdate'
+import { useUpdate } from '../hooks/main/useUpdate'
 import Badge from "./Badge";
 import { STATUS_COLORS, STATUS_OPTIONS } from "../constants/local";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 
-export default function StatusDropdown({ status, id }) {
+export default function StatusDropdown({ status, id, isOpen, onToggle, closeDropdown }) {
+    const queryClient = useQueryClient()
     const { mutate: updateStatus } = useUpdate('orders', 'orders')
     const [selectedStatus, setSelectedStatus] = useState(null);
-    const [open, setOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const [openUp, setOpenUp] = useState(false);
 
     useEffect(() => {
-        function handleClickOutside(event) {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setOpen(false);
-            }
+        if (isOpen && dropdownRef.current) {
+            const rect = dropdownRef.current.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
+            setOpenUp(spaceBelow < 410);
         }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [isOpen]);
+
 
     function handleUpdateStatus(status) {
-
         updateStatus({
             match: { id },
             updates: { status }
+        }, {
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: ['orders'] })
+            }
         })
     }
-
 
     return (
         <div className="relative inline-block w-52 text-left " ref={dropdownRef}>
             <button
-                onClick={() => setOpen((o) => !o)}
+                onClick={onToggle}
                 className="bg-gradient-to-l from-blue-100 to-indigo-50 text-white shadow-md hover:brightness-105 flex items-center justify-between w-full px-6 py-3 rounded-2xl bg-white/70 backdrop-blur-md border border-gray-200 font-semibold text-base hover:bg-white/90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-haspopup="true"
-                aria-expanded={open}
+                aria-expanded={isOpen}
             >
                 {selectedStatus ? (
                     <span className={STATUS_COLORS[selectedStatus]}>{selectedStatus}</span>
@@ -45,7 +48,7 @@ export default function StatusDropdown({ status, id }) {
                     <span> <Badge status={status} /> </span>
                 )}
                 <svg
-                    className={`w-6 h-6 text-gray-600 transform transition-transform duration-300 ${open ? "rotate-180" : ""
+                    className={`w-6 h-6 text-gray-600 transform transition-transform duration-300 ${isOpen ? "rotate-180" : ""
                         }`}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -58,20 +61,22 @@ export default function StatusDropdown({ status, id }) {
             </button>
 
             <ul
-                className={`absolute z-40 mt-2 w-full rounded-2xl bg-white/70 backdrop-blur-md border border-gray-200 shadow-2xl py-2 text-gray-800 font-medium text-base transition-all duration-300 origin-top transform ${open
-                    ? "opacity-100 scale-100 pointer-events-auto"
-                    : "opacity-0 scale-95 pointer-events-none"
-                    }`}
+                className={`absolute z-50 w-full h-60 overflow-y-scroll rounded-2xl bg-white/70 backdrop-blur-md border border-gray-200 shadow-2xl py-2 text-gray-800 font-medium text-base transition-all duration-300 transform
+  ${isOpen
+                        ? "opacity-100 scale-100 pointer-events-auto"
+                        : "opacity-0 scale-95 pointer-events-none"}
+  ${openUp ? "bottom-full mb-2 origin-bottom" : "top-full mt-2 origin-top"}
+`}
             >
                 {STATUS_OPTIONS.map((status) => (
                     <li
                         key={status}
                         onClick={() => {
                             setSelectedStatus(status);
-                            setOpen(false);
+                            closeDropdown();
                             handleUpdateStatus(status)
                         }}
-                        className={`cursor-pointer select-none px-6 py-3 rounded-xl transition-colors duration-250 hover:bg-blue-400 text-white
+                        className={`cursor-pointer select-none px-6 py-2 rounded-xl transition-colors duration-250 hover:bg-blue-400 text-white
        
             `}
                     >

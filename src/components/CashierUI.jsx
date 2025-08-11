@@ -1,14 +1,13 @@
 import Spinner from '../ui/Spinner'
-import { useOrders } from '../hooks/remote/useOrders'
 import { fetchOrdersWithFullDetails } from '../lib/ordersApi'
 import OrdersTable from '../ui/tables/OrdersTable'
+import { useGet } from '../hooks/remote/useGet'
 
 export default function CashierUI() {
-    const { data: orders, isPending } = useOrders(fetchOrdersWithFullDetails, 'orders')
+    const { data: orders, isPending } = useGet(fetchOrdersWithFullDetails, 'orders')
+    console.log(orders);
 
     if (isPending) return <Spinner />
-
-    console.log(orders);
 
     return (
         <div className="overflow-x-auto">

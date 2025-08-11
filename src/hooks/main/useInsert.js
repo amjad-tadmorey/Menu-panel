@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { supaDelete } from '../../../lib/supaQuery'
+import { supaInsert } from '../../lib/supaQuery'
 
-export function useDelete(table, invalidateKey = null) {
+export function useInsert(table, invalidateKey = null) {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (match) => supaDelete(table, match),
+        mutationFn: (payload) => supaInsert(table, payload),
         onSuccess: () => {
             if (invalidateKey) {
                 queryClient.invalidateQueries([invalidateKey])

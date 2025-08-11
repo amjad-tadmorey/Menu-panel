@@ -58,7 +58,6 @@ export const supaQuery = async (table, options = {}) => {
   return data;
 };
 
-
 // 🟢 INSERT
 export async function supaInsert(table, payload) {
   const { data, error } = await supabase.from(table).insert(payload).select()
