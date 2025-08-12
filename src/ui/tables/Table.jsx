@@ -11,7 +11,7 @@ export default function Table({ data }) {
     const columns = Object.keys(data[0]);
 
     return (
-        <div className="overflow-auto rounded-lg shadow bg-white">
+        <div className="overflow-auto rounded-lg shadow bg-white px-4">
             <div className="flex flex-col sm:flex-row items-center gap-3 p-4"></div>
 
             <table className="min-w-full text-sm text-gray-700">

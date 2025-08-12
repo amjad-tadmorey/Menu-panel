@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { formateDate } from "../../helpers/utilHelpers";
 import NoData from "../NoData";
 import LogoutButton from "../../components/LogoutButton";
 import { Modal } from "../Modal";
@@ -95,17 +94,16 @@ export default function OrdersTable({ items, label }) {
                 </div>
 
                 {/* container with glass card */}
-                <div style={{ height: "calc(100vh - 200px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-hidden ">
+                <div style={{ height: "calc(100vh - 200px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-auto ">
                     {/* sticky header for wide screens */}
-                    <div className="hidden md:block sticky top-0 bg-white/60 backdrop-blur-md z-10">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 items-center">
+                    <div className="hidden md:block sticky top-0 bg-white/60 backdrop-blur-md z-10 ">
+                        <div className=" grid-cols-12 gap-4 px-6 py-3 items-center hidden lg:grid">
                             <div className="col-span-2 text-xs font-semibold text-gray-600">Item View</div>
-                            <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("created_at")}>Created At {sortBy.key === "created_at" && (sortBy.asc ? "▲" : "▼")}</div>
                             <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("name")}>Item Name {sortBy.key === "name" && (sortBy.asc ? "▲" : "▼")}</div>
-                            <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("category")}>Category {sortBy.key === "category" && (sortBy.asc ? "▲" : "▼")}</div>
+                            <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer " onClick={() => toggleSort("category")}>Category {sortBy.key === "category" && (sortBy.asc ? "▲" : "▼")}</div>
                             <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("price")}>Price {sortBy.key === "price" && (sortBy.asc ? "▲" : "▼")}</div>
-                            <div className="col-span-1 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("status")}>Total Ordered {sortBy.key === "status" && (sortBy.asc ? "▲" : "▼")}</div>
-                            <div className="col-span-1 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("is_available")}>Available{sortBy.key === "is_available" && (sortBy.asc ? "▲" : "▼")}</div>
+                            <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("status")}>Total Ordered {sortBy.key === "status" && (sortBy.asc ? "▲" : "▼")}</div>
+                            <div className="col-span-2 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("is_available")}>Available{sortBy.key === "is_available" && (sortBy.asc ? "▲" : "▼")}</div>
                         </div>
                     </div>
 
@@ -120,19 +118,17 @@ export default function OrdersTable({ items, label }) {
 
                                     </div>
 
-                                    <div className="md:col-span-2 mt-3 md:mt-0">
-                                        <div className="mt-1 text-xs text-gray-500 hidden md:block">• {formateDate(row.created_at)}</div>
-                                    </div>
+
 
                                     <div className="md:col-span-2 flex flex-col items-start mt-3 md:mt-0">
                                         <div className="text-gray-700 text-md font-semibold">{row.name}</div>
                                     </div>
                                     <div className="md:col-span-2 flex flex-col items-start mt-3 md:mt-0">
-                                        <div className="text-gray-700 text-xl font-semibold">{row.category}</div>
+                                        <div className="text-gray-700 text-sm font-semibold hidden lg:block">{row.category}</div>
                                     </div>
                                     <div className="md:col-span-2 mt-3 md:mt-0 text-sm font-semibold text-gray-900">EGP {row.price}</div>
-                                    <div className="md:col-span-1 mt-3 md:mt-0 text-sm font-semibold text-gray-900">{row.order_items.length}</div>
-                                    <div className="md:col-span-1 mt-3 md:mt-0 text-sm font-semibold text-gray-900">
+                                    <div className="md:col-span-2 mt-3 md:mt-0 text-sm font-semibold text-gray-900">{row.order_items.length}</div>
+                                    <div className="md:col-span-2 mt-3 md:mt-0 text-sm font-semibold text-gray-900">
                                         <Badge status={row.is_available ? 'available' : 'not-available'} />
                                     </div>
 

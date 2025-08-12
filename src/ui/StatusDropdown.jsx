@@ -7,9 +7,10 @@ import { useQueryClient } from "@tanstack/react-query";
 
 
 
-export default function StatusDropdown({ status, id, isOpen, onToggle, closeDropdown }) {
+export default function StatusDropdown({ status, id, table_id, isOpen, onToggle, closeDropdown }) {
     const queryClient = useQueryClient()
     const { mutate: updateStatus } = useUpdate('orders', 'orders')
+    const { mutate: updateTable } = useUpdate('tables', 'tables')
     const [selectedStatus, setSelectedStatus] = useState(null);
     const dropdownRef = useRef(null);
     const [openUp, setOpenUp] = useState(false);
@@ -25,17 +26,23 @@ export default function StatusDropdown({ status, id, isOpen, onToggle, closeDrop
 
     function handleUpdateStatus(status) {
         updateStatus({
-            match: { id },
+            match: { id: table_id },
             updates: { status }
         }, {
             onSuccess: () => {
                 queryClient.invalidateQueries({ queryKey: ['orders'] })
+                if (status === 'completed') {
+                    updateTable({
+                        match: { id: table_id },
+                        updates: { is_active: false }
+                    })
+                }
             }
         })
     }
 
     return (
-        <div className="relative inline-block w-52 text-left " ref={dropdownRef}>
+        <div className="relative inline-block w-40 text-left " ref={dropdownRef}>
             <button
                 onClick={onToggle}
                 className="bg-gradient-to-l from-blue-100 to-indigo-50 text-white shadow-md hover:brightness-105 flex items-center justify-between w-full px-6 py-3 rounded-2xl bg-white/70 backdrop-blur-md border border-gray-200 font-semibold text-base hover:bg-white/90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"

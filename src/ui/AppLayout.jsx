@@ -4,7 +4,7 @@ import Header from "./Header"
 
 export default function AppLayout() {
     return (
-        <div className="flex overflow-hidden">
+        <div className="flex h-screen overflow-hidden">
 
             {/* Sidebar */}
             <Sidenav />

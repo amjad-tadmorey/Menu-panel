@@ -86,10 +86,10 @@ export default function OrdersTable({ orders, label }) {
                 </div>
 
                 {/* container with glass card */}
-                <div style={{ height: "calc(100vh - 200px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-hidden ">
+                <div style={{ height: "calc(100vh - 200px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-auto">
                     {/* sticky header for wide screens */}
                     <div className="hidden md:block sticky top-0 bg-white/60 backdrop-blur-md z-10">
-                        <div className="grid grid-cols-12 gap-4 px-6 py-3 items-center">
+                        <div className="grid-cols-12 gap-4 px-6 py-3 items-center hidden lg:grid">
                             <div className="col-span-1 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("id")}># {sortBy.key === "id" && (sortBy.asc ? "▲" : "▼")}</div>
                             <div className="col-span-3 text-xs font-semibold text-gray-600 cursor-pointer" onClick={() => toggleSort("created_at")}>Created At {sortBy.key === "created_at" && (sortBy.asc ? "▲" : "▼")}</div>
                             <div className="col-span-2 text-xs font-semibold text-gray-600">Table Number</div>
@@ -120,7 +120,7 @@ export default function OrdersTable({ orders, label }) {
                                     <div className="md:col-span-2 mt-3 md:mt-0 text-sm font-semibold text-gray-900">EGP {row.total_price}</div>
 
                                     <div className="md:col-span-4 mt-4 md:mt-0 flex md:justify-end md:items-center">
-                                        <div className="flex items-center gap-2">
+                                        <div className=" items-center gap-2 hidden lg:flex">
                                             <OrderDetails
                                                 order={row}
                                                 isOpen={openDropdown === `orderDetails-${row.id}`}
@@ -130,6 +130,7 @@ export default function OrdersTable({ orders, label }) {
                                             />
                                             <StatusDropdown
                                                 status={row.status}
+                                                table_id={row.table.id}
                                                 id={row.id}
                                                 isOpen={openDropdown === `status-${row.id}`}
                                                 onToggle={() => toggleDropdown(`status-${row.id}`)}

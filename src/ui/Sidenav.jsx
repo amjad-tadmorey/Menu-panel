@@ -9,7 +9,7 @@ const navItems = [
     { label: "Products", icon: Sandwich, path: "/products" },
     { label: "Tables", icon: LayoutGrid, path: "/tables" },
     { label: "Staff", icon: Users, path: "/staff" },
-    { label: "Settings", icon: Settings, path: "/settings" },
+    // { label: "Settings", icon: Settings, path: "/settings" },
 ];
 
 export default function Sidenav() {
