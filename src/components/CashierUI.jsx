@@ -5,7 +5,6 @@ import { useGet } from '../hooks/remote/useGet'
 
 export default function CashierUI() {
     const { data: orders, isPending } = useGet(fetchOrdersWithFullDetails, 'orders')
-    console.log(orders);
 
     if (isPending) return <Spinner />
 

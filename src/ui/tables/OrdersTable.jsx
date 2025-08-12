@@ -51,16 +51,18 @@ export default function OrdersTable({ orders, label }) {
     const visible = TablefilteredOrders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
     return (
-        <div className="min-h-screen py-8 px-6 bg-gradient-to-br from-gray-50 to-white">
+        <div className="py-8 px-6 bg-gradient-to-br from-gray-50 to-white">
 
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                        <LogoutButton />
-                        <h1 className="text-2xl font-semibold text-gray-900">{label}</h1>
-                    </div>
+                    {
+                        label && <div className="flex items-center gap-4">
+                            <LogoutButton />
+                            <h1 className="text-2xl font-semibold text-gray-900">{label}</h1>
+                        </div>
+                    }
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 ml-auto">
                         <div className="relative">
                             <input
                                 type="text"
@@ -84,7 +86,7 @@ export default function OrdersTable({ orders, label }) {
                 </div>
 
                 {/* container with glass card */}
-                <div style={{ height: "calc(100vh - 125px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-hidden ">
+                <div style={{ height: "calc(100vh - 200px)" }} className="rounded-2xl bg-white/60 backdrop-blur-md border border-gray-100 shadow-lg overflow-hidden ">
                     {/* sticky header for wide screens */}
                     <div className="hidden md:block sticky top-0 bg-white/60 backdrop-blur-md z-10">
                         <div className="grid grid-cols-12 gap-4 px-6 py-3 items-center">
