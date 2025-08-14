@@ -26,7 +26,7 @@ export default function StatusDropdown({ status, id, table_id, isOpen, onToggle,
 
     function handleUpdateStatus(status) {
         updateStatus({
-            match: { id: table_id },
+            match: { id },
             updates: { status }
         }, {
             onSuccess: () => {
